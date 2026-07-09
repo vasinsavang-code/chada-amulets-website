@@ -195,23 +195,99 @@
   .trust-item span{font-size:12.5px; color:var(--ivory-dim);}
   @media (max-width:860px){ .about-grid{grid-template-columns:1fr;} }
 
-  /* ---------- products ---------- */
+  /* ---------- products / shop ---------- */
   .products{background:linear-gradient(180deg, var(--void), var(--maroon-deep) 50%, var(--void));}
-  .product-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--line); border:1px solid var(--line);}
+  .product-grid{
+    display:grid; grid-template-columns:repeat(3,1fr); gap:1px;
+    background:var(--line); border:1px solid var(--line);
+  }
   .product-card{
-    background:var(--void); padding:40px 32px; position:relative;
-    transition:background .3s;
+    background:var(--void); padding:0 0 32px; position:relative;
+    transition:background .3s; display:flex; flex-direction:column;
   }
-  .product-card:hover{background:rgba(109,26,38,0.28);}
-  .product-tag{font-size:10px; letter-spacing:0.14em; color:var(--gold); margin-bottom:22px; display:block;}
-  .product-icon{
-    width:56px; height:56px; border-radius:50%; border:1px solid var(--line);
-    display:flex; align-items:center; justify-content:center; margin-bottom:26px;
+  .product-card:hover{background:rgba(109,26,38,0.22);}
+  .product-media{
+    aspect-ratio:1/1; width:100%; position:relative; overflow:hidden;
+    background:radial-gradient(circle at 50% 45%, rgba(201,162,39,0.14), transparent 65%), linear-gradient(160deg, var(--maroon-deep), var(--void));
+    display:flex; align-items:center; justify-content:center;
+    margin-bottom:26px;
   }
-  .product-card h3{font-size:19px; color:var(--ivory); margin-bottom:8px; line-height:1.4;}
-  .product-card .price{color:var(--gold-bright); font-size:14px; margin:14px 0 12px; font-family:'Noto Serif Thai',serif;}
-  .product-card p{font-size:13px; color:var(--ivory-dim);}
+  .product-media img{width:100%; height:100%; object-fit:cover; position:absolute; inset:0;}
+  .product-media .eye{width:64px; height:38px; opacity:0.55;}
+  .product-body{padding:0 32px; display:flex; flex-direction:column; flex:1;}
+  .product-tag{font-size:10px; letter-spacing:0.12em; color:var(--gold); margin-bottom:14px; display:block;}
+  .product-card h3{font-size:18px; color:var(--ivory); margin-bottom:8px; line-height:1.4;}
+  .product-card .price{color:var(--gold-bright); font-size:15px; margin:10px 0 14px; font-family:'Noto Serif Thai',serif;}
+  .product-card p{font-size:12.5px; color:var(--ivory-dim); margin-bottom:20px;}
+  .product-actions{margin-top:auto; display:flex; gap:10px;}
+  .btn-small{
+    flex:1; padding:11px 14px; font-size:12px; letter-spacing:0.04em;
+    border-radius:2px; text-align:center; cursor:pointer; border:none; font-family:inherit;
+  }
+  .btn-add{background:linear-gradient(180deg, var(--gold-bright), var(--gold)); color:var(--void); font-weight:600;}
+  .btn-add:hover{filter:brightness(1.08);}
+  .btn-add:disabled{opacity:0.5; cursor:default;}
+  .btn-ghost{background:transparent; border:1px solid var(--line); color:var(--ivory-dim);}
+  .btn-ghost:hover{border-color:var(--gold); color:var(--gold-bright);}
   @media (max-width:860px){ .product-grid{grid-template-columns:1fr;} }
+
+  /* ---------- cart ---------- */
+  .cart-trigger{
+    position:relative; width:40px; height:40px; border-radius:50%;
+    border:1px solid var(--line); display:flex; align-items:center; justify-content:center;
+    color:var(--ivory-dim); cursor:pointer; background:none;
+  }
+  .cart-trigger:hover{border-color:var(--gold); color:var(--gold-bright);}
+  .cart-badge{
+    position:absolute; top:-6px; right:-6px; background:var(--gold); color:var(--void);
+    font-size:10px; font-weight:700; min-width:17px; height:17px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center; padding:0 3px;
+  }
+  .cart-overlay{
+    position:fixed; inset:0; background:rgba(10,5,4,0.72); z-index:90;
+    opacity:0; pointer-events:none; transition:opacity .3s;
+  }
+  .cart-overlay.open{opacity:1; pointer-events:auto;}
+  .cart-panel{
+    position:fixed; top:0; right:0; bottom:0; width:min(420px, 92vw); z-index:91;
+    background:var(--void); border-left:1px solid var(--line);
+    transform:translateX(100%); transition:transform .35s ease;
+    display:flex; flex-direction:column;
+  }
+  .cart-panel.open{transform:translateX(0);}
+  .cart-head{
+    padding:24px; border-bottom:1px solid var(--line);
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .cart-head h3{font-size:18px; color:var(--ivory);}
+  .cart-close{background:none; border:none; color:var(--ivory-dim); font-size:22px; cursor:pointer; line-height:1;}
+  .cart-close:hover{color:var(--gold-bright);}
+  .cart-items{flex:1; overflow-y:auto; padding:20px 24px;}
+  .cart-empty{color:var(--ivory-dim); font-size:13.5px; text-align:center; padding:60px 0;}
+  .cart-row{display:flex; gap:14px; padding:16px 0; border-bottom:1px solid var(--line);}
+  .cart-row-media{
+    width:64px; height:64px; flex-shrink:0; position:relative; overflow:hidden;
+    background:linear-gradient(160deg, var(--maroon-deep), var(--void));
+    display:flex; align-items:center; justify-content:center;
+  }
+  .cart-row-media img{width:100%; height:100%; object-fit:cover; position:absolute; inset:0;}
+  .cart-row-media .eye{width:30px; height:18px; opacity:0.5;}
+  .cart-row-info{flex:1; min-width:0;}
+  .cart-row-info b{font-size:13.5px; color:var(--ivory); display:block; margin-bottom:4px;}
+  .cart-row-info .cart-price{font-size:12.5px; color:var(--gold-bright);}
+  .qty-control{display:flex; align-items:center; gap:10px; margin-top:8px;}
+  .qty-btn{
+    width:22px; height:22px; border:1px solid var(--line); background:none; color:var(--ivory-dim);
+    border-radius:2px; cursor:pointer; font-size:13px; line-height:1;
+  }
+  .qty-btn:hover{border-color:var(--gold); color:var(--gold-bright);}
+  .qty-val{font-size:13px; min-width:16px; text-align:center;}
+  .cart-remove{font-size:11px; color:var(--ivory-dim); text-decoration:underline; cursor:pointer; margin-top:8px; display:inline-block;}
+  .cart-remove:hover{color:var(--gold-bright);}
+  .cart-foot{border-top:1px solid var(--line); padding:22px 24px 26px;}
+  .cart-subtotal{display:flex; justify-content:space-between; font-size:14.5px; color:var(--ivory); margin-bottom:18px;}
+  .cart-subtotal b{color:var(--gold-bright); font-family:'Noto Serif Thai',serif; font-size:19px;}
+  .cart-note{font-size:11.5px; color:var(--ivory-dim); margin-top:12px; line-height:1.6;}
 
   /* ---------- process ---------- */
   .process{background:var(--void);}
@@ -271,7 +347,13 @@
       <a href="#process">พิธีปลุกเสก</a>
       <a href="#contact">ติดต่อ</a>
     </nav>
-    <a class="nav-cta" href="https://lin.ee/0RzaJ8u" target="_blank" rel="noopener">แอด LINE</a>
+    <div style="display:flex; align-items:center; gap:16px;">
+      <button class="cart-trigger" id="cartTrigger" aria-label="ตะกร้าสินค้า">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 6h2l2.4 12.2a2 2 0 0 0 2 1.6h8.4a2 2 0 0 0 2-1.6L22 8H6"/><circle cx="9" cy="21" r="1"/><circle cx="18" cy="21" r="1"/></svg>
+        <span class="cart-badge" id="cartBadge" style="display:none;">0</span>
+      </button>
+      <a class="nav-cta" href="https://lin.ee/0RzaJ8u" target="_blank" rel="noopener">แอด LINE</a>
+    </div>
   </div>
 </header>
 
@@ -329,35 +411,13 @@
 <section class="products" id="products">
   <div class="wrap">
     <div class="section-head" data-reveal>
-      <div class="eyebrow"><span class="rule"></span>พระเครื่องแนะนำ</div>
-      <h2>รุ่นยอดนิยม ประจำร้าน</h2>
-      <p>คัดสรรจากคอลเลกชันที่ลูกค้าให้ความศรัทธาสูงสุด แต่ละรุ่นมีจำนวนจำกัดตามการสร้าง</p>
+      <div class="eyebrow"><span class="rule"></span>ร้านค้าออนไลน์</div>
+      <h2>พระเครื่อง &amp; เครื่องรางทั้งหมด</h2>
+      <p>คัดสรรจากคอลเลกชันที่ลูกค้าให้ความศรัทธาสูงสุด แต่ละรุ่นมีจำนวนจำกัดตามการสร้าง — รุ่นที่ยังไม่ระบุราคา กดสอบถามผ่าน LINE ได้โดยตรง</p>
     </div>
   </div>
   <div class="wrap" style="padding:0;">
-    <div class="product-grid" data-reveal>
-      <div class="product-card">
-        <span class="product-tag">รุ่นมหาลาภไหลมาเทมา 67</span>
-        <div class="product-icon"><div class="eye eye-slot"></div></div>
-        <h3>ตาขุนโหร ปกใบมะขาม</h3>
-        <div class="price">เนื้อทองคำแท้ · พร้อมใบรับรอง</div>
-        <p>องค์เล็กพกพาง่าย เหมาะสำหรับผู้เริ่มบูชา มาพร้อมบัตรรับรองพระแท้และกล่องบรรจุภัณฑ์หรู</p>
-      </div>
-      <div class="product-card">
-        <span class="product-tag">พ.ศ. 2550 · ศาลหลักเมือง นครศรีธรรมราช</span>
-        <div class="product-icon"><div class="eye eye-slot"></div></div>
-        <h3>คฑาเศียรเทพ<br>รุ่นรวยล้นฟ้าเมตตาบารมี</h3>
-        <div class="price">เนื้อทองคำ · น้ำหนัก 10.89 กรัม</div>
-        <p>รุ่นหายาก ตรวจสอบน้ำหนักทองจริงต่อหน้ากล้อง พร้อมบัตรรับรองระบุที่มาชัดเจน</p>
-      </div>
-      <div class="product-card">
-        <span class="product-tag">ครูบาบุญยัง ปุญญังกโร</span>
-        <div class="product-icon"><div class="eye eye-slot"></div></div>
-        <h3>ครูบาตรีเทพจันทวัณโณ</h3>
-        <div class="price">เนื้อชนวนเพ้นสี · ฿950</div>
-        <p>ฐานอุดผงพุทธชนวนเดิม สืบสายวิชาโดยตรงจากครูบาสี่หูห้าตา สายศรัทธาแห่งโชคลาภ</p>
-      </div>
-    </div>
+    <div class="product-grid" id="productGrid" data-reveal></div>
   </div>
 </section>
 
@@ -428,7 +488,227 @@
   </div>
 </footer>
 
+<div class="cart-overlay" id="cartOverlay"></div>
+<div class="cart-panel" id="cartPanel">
+  <div class="cart-head">
+    <h3>ตะกร้าของคุณ</h3>
+    <button class="cart-close" id="cartCloseBtn" aria-label="ปิดตะกร้า">&times;</button>
+  </div>
+  <div class="cart-items" id="cartItems"></div>
+  <div class="cart-foot">
+    <div class="cart-subtotal"><span>ยอดรวม</span><b id="cartSubtotal">฿0</b></div>
+    <a class="btn btn-gold" style="width:100%; justify-content:center;" id="cartCheckoutBtn" target="_blank" rel="noopener">สรุปออเดอร์ทาง LINE</a>
+    <button class="btn btn-small btn-ghost" style="width:100%; margin-top:10px;" id="cartCopyBtn">คัดลอกรายการสั่งซื้อ</button>
+    <p class="cart-note">ขั้นตอนนี้ยังไม่มีการตัดบัตร/โอนเงินอัตโนมัติ — ระบบจะสรุปรายการให้คุณส่งต่อทาง LINE เพื่อยืนยันออเดอร์และแจ้งโอนเงินกับทีมงาน</p>
+  </div>
+</div>
+
 <script>
+  // ============ PRODUCT CATALOG ============
+  // แก้ไข/เพิ่มสินค้าได้ที่นี่ — ราคา 0 = ยังไม่ระบุราคา (ปุ่มจะเป็น "สอบถามราคา" แทน "หยิบใส่ตะกร้า")
+  // ใส่รูป: วางไฟล์ในโฟลเดอร์ images/ ให้ชื่อไฟล์ตรงกับ "image" ด้านล่าง ระบบจะเปลี่ยนจากไอคอนตาเป็นรูปจริงอัตโนมัติ
+  const PRODUCTS = [
+    {
+      id: "sihuhata-main",
+      tag: "เทพเจ้าประจำสำนัก",
+      name: "สี่หูห้าตา 五眼四耳猴",
+      detail: "เนื้อทองคำ / นาก / ชนวนมงคล ตามตำนานล้านนา",
+      desc: "องค์หลักของสำนัก ผ่านพิธีปลุกเสกเต็มรูปแบบ พร้อมบัตรรับรองพระแท้",
+      price: 0,
+      image: "images/sihuhata-main.jpg"
+    },
+    {
+      id: "takhunhorn-makham",
+      tag: "รุ่นมหาลาภไหลมาเทมา 67",
+      name: "ตาขุนโหร ปกใบมะขาม",
+      detail: "เนื้อทองคำแท้ · พร้อมใบรับรอง",
+      desc: "องค์เล็กพกพาง่าย เหมาะสำหรับผู้เริ่มบูชา มาพร้อมบัตรรับรองพระแท้และกล่องบรรจุภัณฑ์หรู",
+      price: 0,
+      image: "images/takhunhorn-makham.jpg"
+    },
+    {
+      id: "khatasianthep",
+      tag: "พ.ศ. 2550 · ศาลหลักเมือง นครศรีธรรมราช",
+      name: "คฑาเศียรเทพ รุ่นรวยล้นฟ้าเมตตาบารมี",
+      detail: "เนื้อทองคำ · น้ำหนัก 10.89 กรัม",
+      desc: "รุ่นหายาก ตรวจสอบน้ำหนักทองจริงต่อหน้ากล้อง พร้อมบัตรรับรองระบุที่มาชัดเจน",
+      price: 0,
+      image: "images/khatasianthep.jpg"
+    },
+    {
+      id: "kruba-trithep",
+      tag: "ครูบาบุญยัง ปุญญังกโร",
+      name: "ครูบาตรีเทพจันทวัณโณ",
+      detail: "เนื้อชนวนเพ้นสี",
+      desc: "ฐานอุดผงพุทธชนวนเดิม สืบสายวิชาโดยตรงจากครูบาสี่หูห้าตา สายศรัทธาแห่งโชคลาภ",
+      price: 950,
+      image: "images/kruba-trithep.jpg"
+    },
+    {
+      id: "phra-buttaphong",
+      tag: "ลอยองค์ เคี่ยวน้ำมันเสือ",
+      name: "พระบัตรพงษ์พระกาฬ",
+      detail: "พิธีเคี่ยวน้ำมันเสือแบบโบราณ",
+      desc: "สายคงกระพัน แคล้วคลาด เข้าร่วมพิธีเคี่ยวน้ำมันเสือจริงตามตำรับโบราณ",
+      price: 0,
+      image: "images/phra-buttaphong.jpg"
+    },
+    {
+      id: "jatukam",
+      tag: "จตุคามรามเทพ",
+      name: "จตุคามรามเทพ รุ่นมาตรฐาน",
+      detail: "เทพเจ้าแห่งโชคลาภและความมั่งคั่ง",
+      desc: "รุ่นยอดนิยมตลอดกาล เหมาะสำหรับผู้เริ่มสะสมและผู้ค้าขาย",
+      price: 0,
+      image: "images/jatukam.jpg"
+    }
+  ];
+
+  // ============ RENDER CATALOG ============
+  const grid = document.getElementById('productGrid');
+  const eyeTplRaw = document.getElementById('eye-svg').innerHTML;
+
+  function fmtTHB(n){ return '฿' + n.toLocaleString('th-TH'); }
+
+  PRODUCTS.forEach(p=>{
+    const card = document.createElement('div');
+    card.className = 'product-card';
+    const priceLabel = p.price > 0 ? fmtTHB(p.price) : 'สอบถามราคา';
+    const actionHtml = p.price > 0
+      ? `<button class="btn-small btn-add" data-add="${p.id}">หยิบใส่ตะกร้า</button>`
+      : `<a class="btn-small btn-add" style="text-decoration:none; display:flex; align-items:center; justify-content:center;" href="https://lin.ee/0RzaJ8u" target="_blank" rel="noopener">สอบถามราคา</a>`;
+    card.innerHTML = `
+      <div class="product-media">
+        <img src="${p.image}" alt="${p.name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div class="eye" style="display:none;">${eyeTplRaw}</div>
+      </div>
+      <div class="product-body">
+        <span class="product-tag">${p.tag}</span>
+        <h3>${p.name}</h3>
+        <div class="price">${p.detail}</div>
+        <p>${p.desc}</p>
+        <div class="product-actions">${actionHtml}</div>
+      </div>
+    `;
+    // if image fails, show eye icon immediately (onerror above); if no image src at all, also show icon
+    const img = card.querySelector('.product-media img');
+    const eyeBox = card.querySelector('.product-media .eye');
+    img.addEventListener('error', ()=>{ img.style.display='none'; eyeBox.style.display='flex'; eyeBox.style.color='var(--gold)'; });
+    grid.appendChild(card);
+  });
+
+  // ============ CART ============
+  const CART_KEY = 'chada_cart_v1';
+  function loadCart(){ try{ return JSON.parse(localStorage.getItem(CART_KEY)) || {}; }catch(e){ return {}; } }
+  function saveCart(cart){ localStorage.setItem(CART_KEY, JSON.stringify(cart)); }
+  let cart = loadCart();
+
+  const cartItemsEl = document.getElementById('cartItems');
+  const cartSubtotalEl = document.getElementById('cartSubtotal');
+  const cartBadgeEl = document.getElementById('cartBadge');
+  const cartCheckoutBtn = document.getElementById('cartCheckoutBtn');
+
+  function findProduct(id){ return PRODUCTS.find(p=>p.id===id); }
+
+  function renderCart(){
+    const ids = Object.keys(cart).filter(id=>cart[id] > 0);
+    cartBadgeEl.textContent = ids.reduce((sum,id)=>sum+cart[id],0);
+    cartBadgeEl.style.display = ids.length ? 'flex' : 'none';
+
+    if(!ids.length){
+      cartItemsEl.innerHTML = '<div class="cart-empty">ยังไม่มีสินค้าในตะกร้า<br>เลือกชมพระเครื่องด้านล่างได้เลย</div>';
+      cartSubtotalEl.textContent = fmtTHB(0);
+      cartCheckoutBtn.href = 'https://lin.ee/0RzaJ8u';
+      return;
+    }
+
+    let subtotal = 0;
+    let summaryLines = ['สรุปรายการสั่งซื้อ — เชษฐ์โฟโต้ Chada Amulets', ''];
+    cartItemsEl.innerHTML = '';
+    ids.forEach(id=>{
+      const p = findProduct(id);
+      const qty = cart[id];
+      const lineTotal = p.price * qty;
+      subtotal += lineTotal;
+      summaryLines.push(`• ${p.name} x${qty} = ${fmtTHB(lineTotal)}`);
+
+      const row = document.createElement('div');
+      row.className = 'cart-row';
+      row.innerHTML = `
+        <div class="cart-row-media">
+          <img src="${p.image}" alt="${p.name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+          <div class="eye" style="display:none; color:var(--gold);">${eyeTplRaw}</div>
+        </div>
+        <div class="cart-row-info">
+          <b>${p.name}</b>
+          <div class="cart-price">${fmtTHB(p.price)} × ${qty} = ${fmtTHB(lineTotal)}</div>
+          <div class="qty-control">
+            <button class="qty-btn" data-dec="${id}">−</button>
+            <span class="qty-val">${qty}</span>
+            <button class="qty-btn" data-inc="${id}">+</button>
+          </div>
+          <span class="cart-remove" data-remove="${id}">ลบออก</span>
+        </div>
+      `;
+      cartItemsEl.appendChild(row);
+    });
+
+    summaryLines.push('', `ยอดรวม: ${fmtTHB(subtotal)}`, '', 'รบกวนแจ้งชื่อ-ที่อยู่จัดส่งด้วยครับ 🙏');
+    cartSubtotalEl.textContent = fmtTHB(subtotal);
+
+    const summaryText = summaryLines.join('\n');
+    cartCheckoutBtn.href = 'https://line.me/R/oaMessage/@ched924/?' + encodeURIComponent(summaryText);
+    cartCheckoutBtn.dataset.summary = summaryText;
+  }
+
+  function addToCart(id){
+    cart[id] = (cart[id] || 0) + 1;
+    saveCart(cart); renderCart(); openCart();
+  }
+  function changeQty(id, delta){
+    cart[id] = Math.max(0, (cart[id]||0) + delta);
+    if(cart[id] === 0) delete cart[id];
+    saveCart(cart); renderCart();
+  }
+  function removeItem(id){
+    delete cart[id];
+    saveCart(cart); renderCart();
+  }
+
+  grid.addEventListener('click', (e)=>{
+    const addId = e.target.closest('[data-add]');
+    if(addId){ addToCart(addId.dataset.add); }
+  });
+  cartItemsEl.addEventListener('click', (e)=>{
+    const inc = e.target.closest('[data-inc]');
+    const dec = e.target.closest('[data-dec]');
+    const rem = e.target.closest('[data-remove]');
+    if(inc) changeQty(inc.dataset.inc, 1);
+    if(dec) changeQty(dec.dataset.dec, -1);
+    if(rem) removeItem(rem.dataset.remove);
+  });
+
+  // cart drawer open/close
+  const cartOverlay = document.getElementById('cartOverlay');
+  const cartPanel = document.getElementById('cartPanel');
+  function openCart(){ cartOverlay.classList.add('open'); cartPanel.classList.add('open'); }
+  function closeCart(){ cartOverlay.classList.remove('open'); cartPanel.classList.remove('open'); }
+  document.getElementById('cartTrigger').addEventListener('click', openCart);
+  document.getElementById('cartCloseBtn').addEventListener('click', closeCart);
+  cartOverlay.addEventListener('click', closeCart);
+
+  document.getElementById('cartCopyBtn').addEventListener('click', ()=>{
+    const text = cartCheckoutBtn.dataset.summary || 'ยังไม่มีสินค้าในตะกร้า';
+    navigator.clipboard.writeText(text).then(()=>{
+      const btn = document.getElementById('cartCopyBtn');
+      const original = btn.textContent;
+      btn.textContent = 'คัดลอกแล้ว ✓';
+      setTimeout(()=>{ btn.textContent = original; }, 1800);
+    });
+  });
+
+  renderCart();
+
   // inject signature eye SVG into all slots
   const eyeTpl = document.getElementById('eye-svg').innerHTML;
   document.querySelectorAll('.eye-slot').forEach(el=>{
