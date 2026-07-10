@@ -267,6 +267,10 @@
         <input type="checkbox" id="p_active" checked>
         <label for="p_active">แสดงสินค้านี้บนหน้าเว็บ (Active)</label>
       </div>
+      <div class="toggle-row">
+        <input type="checkbox" id="p_featured">
+        <label for="p_featured">แสดงในแถว "สินค้าใหม่มาแรง" หน้าแรก</label>
+      </div>
       <div class="error-msg" id="productError">กรุณากรอกรหัสสินค้าและชื่อสินค้า</div>
       <div style="display:flex; gap:10px; margin-top:10px;">
         <button class="btn" id="productSaveBtn">บันทึก</button>
@@ -486,6 +490,7 @@
       document.getElementById('p_price').value = p.price || 0;
       document.getElementById('p_sort').value = p.sort_order || 0;
       document.getElementById('p_active').checked = !!p.is_active;
+      document.getElementById('p_featured').checked = !!p.is_featured;
       if(p.image_url){ preview.src = p.image_url; preview.style.display='block'; prompt.textContent='เปลี่ยนรูป'; }
       else { preview.style.display='none'; prompt.textContent='แตะเพื่อเลือกรูป'; }
       deleteBtn.style.display = 'inline-block';
@@ -501,6 +506,7 @@
       document.getElementById('p_price').value = 0;
       document.getElementById('p_sort').value = ALL_PRODUCTS.length;
       document.getElementById('p_active').checked = true;
+      document.getElementById('p_featured').checked = false;
       preview.style.display='none'; prompt.textContent='แตะเพื่อเลือกรูป';
       deleteBtn.style.display = 'none';
     }
@@ -562,6 +568,7 @@
       price: Number(document.getElementById('p_price').value) || 0,
       sort_order: Number(document.getElementById('p_sort').value) || 0,
       is_active: document.getElementById('p_active').checked,
+      is_featured: document.getElementById('p_featured').checked,
       image_url
     };
 
