@@ -667,9 +667,9 @@
   const sb = supabaseReady ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
 
   // ============ PRODUCT CATALOG ============
-  // แก้ไข/เพิ่มสินค้าได้ที่นี่ — ราคา 0 = ยังไม่ระบุราคา (ปุ่มจะเป็น "สอบถามราคา" แทน "หยิบใส่ตะกร้า")
-  // ใส่รูป: วางไฟล์ในโฟลเดอร์ images/ ให้ชื่อไฟล์ตรงกับ "image" ด้านล่าง ระบบจะเปลี่ยนจากไอคอนตาเป็นรูปจริงอัตโนมัติ
-  const PRODUCTS = [
+  // ตั้งแต่มีระบบ Admin แล้ว ข้อมูลสินค้าจริงจะถูกดึงจากตาราง "products" ใน Supabase
+  // รายการด้านล่างนี้เป็นแค่ข้อมูลสำรอง (fallback) ใช้ตอนยังไม่ได้ตั้งค่า Supabase หรือดึงข้อมูลไม่สำเร็จ
+  const FALLBACK_PRODUCTS = [
     {
       id: "sihuhata-main",
       tag: "เทพเจ้าประจำสำนัก",
@@ -726,13 +726,40 @@
     }
   ];
 
+  let PRODUCTS = []; // จะถูกเติมค่าจริงหลังโหลดจาก Supabase (หรือ fallback) เสร็จ
+
+  async function loadProducts(){
+    if(supabaseReady){
+      try{
+        const { data, error } = await sb.from('products').select('*').eq('is_active', true).order('sort_order', { ascending: true });
+        if(error) throw error;
+        if(data && data.length){
+          return data.map(row => ({
+            id: row.id,
+            tag: row.tag || '',
+            name: row.name,
+            detail: row.detail || '',
+            desc: row.description || '',
+            price: Number(row.price) || 0,
+            image: row.image_url || ''
+          }));
+        }
+      }catch(e){
+        console.error('โหลดสินค้าจาก Supabase ไม่สำเร็จ ใช้ข้อมูลสำรองแทน:', e);
+      }
+    }
+    return FALLBACK_PRODUCTS;
+  }
+
   // ============ RENDER CATALOG ============
   const grid = document.getElementById('productGrid');
   const eyeTplRaw = document.getElementById('eye-svg').innerHTML;
 
   function fmtTHB(n){ return '฿' + n.toLocaleString('th-TH'); }
 
-  PRODUCTS.forEach(p=>{
+  function renderProductGrid(){
+    grid.innerHTML = '';
+    PRODUCTS.forEach(p=>{
     const card = document.createElement('div');
     card.className = 'product-card';
     const priceLabel = p.price > 0 ? fmtTHB(p.price) : 'สอบถามราคา';
@@ -757,7 +784,8 @@
     const eyeBox = card.querySelector('.product-media .eye');
     img.addEventListener('error', ()=>{ img.style.display='none'; eyeBox.style.display='flex'; eyeBox.style.color='var(--gold)'; });
     grid.appendChild(card);
-  });
+    });
+  }
 
   // ============ CART ============
   const CART_KEY = 'chada_cart_v1';
@@ -869,7 +897,12 @@
     });
   });
 
-  renderCart();
+  async function initCatalog(){
+    PRODUCTS = await loadProducts();
+    renderProductGrid();
+    renderCart();
+  }
+  initCatalog();
 
   // ============ CHECKOUT FLOW ============
   const checkoutOverlay = document.getElementById('checkoutOverlay');
@@ -998,7 +1031,7 @@
         const { error: upErr } = await sb.storage.from('payment-slips').upload(path, selectedSlipFile);
         if(upErr) throw upErr;
         const { data: pub } = sb.storage.from('payment-slips').getPublicUrl(path);
-        await sb.from('orders').update({ payment_slip_url: pub.publicUrl }).eq('id', currentOrder.order_id);
+        await sb.from('orders').update({ payment_slip_url: pub.publicUrl, status: 'pending_verification' }).eq('id', currentOrder.order_id);
       }catch(e){
         console.error('Slip upload failed:', e);
       }
